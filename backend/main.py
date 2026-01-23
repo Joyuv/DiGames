@@ -60,8 +60,6 @@ def add_jogo(json: JsonJogoAdicionar):
         "mensagem":"Jogo adicionado com sucesso!"
     }
 
-
-
 @app.post("/remove/jogo")
 def remove_jogo(json: JsonJogoRemover):
     jogo = db.get(Jogo, json.id)
