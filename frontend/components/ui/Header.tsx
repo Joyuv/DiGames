@@ -6,8 +6,10 @@ export default function Header() {
 	return(
 		<header 
 			className="
-				bg-slate-950
 				flex items-center
+				bg-slate-950
+				bg-gradient-to-b from-slate-900 to-slate-800
+				border-b border-slate-900
 			"
 		>
 			<Link href="/">
