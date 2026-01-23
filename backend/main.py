@@ -2,7 +2,7 @@ from typing import Union
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from models.models import db, Jogo
-from models.json import JsonJogoAtualizar
+from models.json import JsonJogoAtualizar, JsonJogoRemover, JsonJogoAdicionar
 from sqlalchemy import select
 
 app = FastAPI()
