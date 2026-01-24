@@ -1,6 +1,7 @@
 import Image from "next/image";
 import logoDiGames from "@/public/assets/logo_digames.png"
 import Link from "next/link";
+import ThemeButton from "./ThemeButton";
 
 export default function Header() {
 	return(
@@ -8,8 +9,8 @@ export default function Header() {
 			className="
 				flex items-center
 				bg-slate-950
-				bg-gradient-to-b from-slate-900 to-slate-800
-				border-b border-slate-900
+				bg-linear-to-b from-slate-900 to-slate-800
+				border-b border-slate-700
 			"
 		>
 			<Link href="/">
@@ -17,6 +18,7 @@ export default function Header() {
 					className="w-40"
 				/>
 			</Link>
+			<ThemeButton />
 		</header>
 	);
 }
