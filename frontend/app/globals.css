@@ -16,7 +16,7 @@
 
 @theme{
   --background: var(--color-slate-900);
-  --foreground: var(--color-slate-50);
+  --foreground: var(--color-slate-100);
 }
 
 @layer base {
