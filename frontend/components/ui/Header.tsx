@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logoDiGames from "@/public/assets/logo_digames.png"
+import logoDiGames from "@/public/assets/logo_digames.svg"
 import Link from "next/link";
 import ThemeButton from "./ThemeButton";
 
