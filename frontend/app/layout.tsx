@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
 import { ThemeProvider } from "@/context/ThemeProvider";
+import Script from "next/script";
 
 
 export const metadata: Metadata = {
@@ -18,6 +19,9 @@ export default function RootLayout({
 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <Script src="/scripts/preLoadDataTheme.js" strategy="beforeInteractive"/>
+      </head>
       <body
         className="antialiased flex flex-col min-h-screen"
       >

@@ -29,6 +29,10 @@
   * {
     @apply transition-colors duration-300 ease-in-out;
   }
+
+  html:not([data-theme-loaded]) * {
+    transition: none !important;
+  }
 }
 
 .rotated{
