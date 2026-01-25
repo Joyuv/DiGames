@@ -2,6 +2,7 @@ import Image from "next/image";
 import logoDiGames from "@/public/assets/digames.png"
 import Link from "next/link";
 import ThemeButton from "./ThemeButton";
+import MenuButton from "./MenuButton";
 
 export default function Header() {
 	return(
@@ -20,7 +21,10 @@ export default function Header() {
 					className="w-30"
 				/>
 			</Link>
-			<ThemeButton />
+			<div className="flex gap-2">
+				<ThemeButton />
+				<MenuButton />
+			</div>
 		</header>
 	);
 }

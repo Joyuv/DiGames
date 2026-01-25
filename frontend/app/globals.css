@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-[data-theme="light"]{
+[data-theme="light"] {
   --color-slate-950: oklch(98.4% 0.003 247.858);
   --color-slate-900: oklch(96.8% 0.007 247.896);
   --color-slate-800: oklch(92.9% 0.013 255.508);
@@ -14,7 +14,7 @@
   --color-slate-50: oklch(12.9% 0.042 264.695);
 }
 
-@theme{
+@theme {
   --background: var(--color-slate-900);
   --foreground: var(--color-slate-100);
 }
@@ -35,7 +35,11 @@
   }
 }
 
-.rotated{
+.rotated {
   transform: rotate(360deg);
 }
 
+.close-menu {
+  width: 0;
+  /* transform: rotate(90deg); */
+}
