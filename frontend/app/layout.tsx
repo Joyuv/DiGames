@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/ui/Header";
 import Footer from "@/components/ui/Footer";
-import { ThemeProvider } from "@/components/providers/theme-provider";
+import Script from "next/script";
+import SideMenu from "@/components/ui/SideMenu";
+import Providers from "@/context/Providers";
 
 
 export const metadata: Metadata = {
@@ -18,20 +20,22 @@ export default function RootLayout({
 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <Script src="/scripts/preLoadDataTheme.js" strategy="beforeInteractive"/>
+      </head>
       <body
         className="antialiased flex flex-col min-h-screen"
       >
-        <ThemeProvider
-          attribute="data-theme"
-          defaultTheme="system"
-          enableSystem
-        >
+        <Providers>
           <Header />
-          <main className="flex flex-1 p-5">
-            {children}
-          </main>
+          <div className="flex flex-1 relative">
+            <main className="flex flex-1 p-5">
+              {children}
+            </main>
+            <SideMenu />
+          </div>
           <Footer />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
