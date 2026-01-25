@@ -25,14 +25,14 @@ export default function MenuButton() {
         <div className={isOpen ? "block" : "hidden"}>
           <X 
             className="transition-transform duration-800"
-            color={ theme === "light" ? "var(--color-slate-400)": undefined} 
+            color={ theme === "dark" ? "var(--color-emphasis)": undefined} 
             size="2rem"
           />
         </div>
         <div className={isOpen ? "hidden" : "block"}>
           <Menu extraClassNames={clsx(
             collapsed ? "close-menu" : "",
-            theme === "light" ? "color-slate-400" : "",
+            theme === "dark" ? "text-emphasis" : "",
           )} />
         </div>
       </div>

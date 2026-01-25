@@ -33,7 +33,7 @@ export default function ThemeButton() {
         " 
         onClick={toggleTheme}
       >
-        { theme === "dark" ? <Sun size="2rem"/> : <Moon color="var(--color-slate-400)" size="2rem"/>}
+        { theme === "dark" ? <Sun color="var(--color-emphasis)" size="2rem"/> : <Moon size="2rem"/>}
       </div>
     </>
   );
