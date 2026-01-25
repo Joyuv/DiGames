@@ -14,7 +14,6 @@ export default function SideMenuLink({ children,  ...props }: SideMenuLinkProps)
         border-b border-slate-600
         py-2 rounded-t
         hover:bg-slate-700
-        text-slate-400
       "
     >
       {children}
