@@ -11,7 +11,7 @@ export default function ThemeButton() {
   const [ mounted, setMounted ] = useState(false); 
   // ^ evitar hydratation warning ao atualizar página ^
   
-  function ChangeTheme() {
+  function toggleTheme() {
     const elemento = document.getElementById("toggle-theme");
     elemento?.classList.toggle("rotated");
     setTheme(theme === "dark" ? "light" : "dark");
@@ -31,9 +31,9 @@ export default function ThemeButton() {
           cursor-pointer 
           transition-transform duration-600
         " 
-        onClick={ChangeTheme}
+        onClick={toggleTheme}
       >
-        { theme === "dark" ? <Sun size="2rem"/> : <Moon color="var(--color-violet-400)" size="2rem"/>}
+        { theme === "dark" ? <Sun size="2rem"/> : <Moon color="var(--color-slate-400)" size="2rem"/>}
       </div>
     </>
   );
