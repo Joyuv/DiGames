@@ -5,7 +5,6 @@ import { useTheme } from "next-themes";
 import { useContext, useEffect, useState } from "react";
 import Menu from "./Menu";
 import { MenuContext } from "@/context/MenuContext";
-import clsx from "clsx";
 
 
 export default function MenuButton() {
