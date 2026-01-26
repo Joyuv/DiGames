@@ -5,7 +5,6 @@ import { useTheme } from "next-themes";
 import { useContext, useEffect, useState } from "react";
 import Menu from "./Menu";
 import { MenuContext } from "@/context/MenuContext";
-import clsx from "clsx";
 
 
 export default function MenuButton() {
@@ -30,10 +29,10 @@ export default function MenuButton() {
           />
         </div>
         <div className={isOpen ? "hidden" : "block"}>
-          <Menu extraClassNames={clsx(
-            collapsed ? "close-menu" : "",
-            theme === "dark" ? "text-emphasis" : "",
-          )} />
+          <Menu extraClassNames={`
+            ${collapsed ? "close-menu" : ""}
+            ${theme === "dark" ? "text-emphasis" : ""}
+          `} />
         </div>
       </div>
     </>
