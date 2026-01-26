@@ -30,10 +30,10 @@ export default function MenuButton() {
           />
         </div>
         <div className={isOpen ? "hidden" : "block"}>
-          <Menu extraClassNames={clsx(
-            collapsed ? "close-menu" : "",
-            theme === "dark" ? "text-emphasis" : "",
-          )} />
+          <Menu extraClassNames={`
+            ${collapsed ? "close-menu" : ""}
+            ${theme === "dark" ? "text-emphasis" : ""}
+          `} />
         </div>
       </div>
     </>
