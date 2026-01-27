@@ -1,10 +1,11 @@
 from typing import Union
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models.models import db, Jogo
+from models.models import db, Jogo, engine, Base
 from models.json import JsonJogoAtualizar, JsonJogoRemover, JsonJogoAdicionar
 from sqlalchemy import select
 
+Base.metadata.create_all(engine)
 app = FastAPI()
 
 origins = [
@@ -30,11 +31,14 @@ async def get_jogo_info(jogo_id):
 
 @app.get("/get/jogos")
 def get_jogos():
-    jogos = []
-    for jogo in db.scalars(select(Jogo)):
-        jogos.append(jogo)
+    jogos = "fds"
+    # # jogos = []
+    # with db.connection() as conn:
+    #     jogos = conn.execute(select(Jogo)).scalars().all()
+    # for jogo in db.scalars(select(Jogo)):
+    #     jogos.append(jogo.to_dict())
     
-    return({"jogos": jogos})
+    return {"jogos": jogos}
 
 @app.post("/update/jogo")
 async def update_jogo(json: JsonJogoAtualizar):
@@ -68,3 +72,6 @@ def remove_jogo(json: JsonJogoRemover):
     return {
         "mensagem":f"Jogo removido nome: {jogo.nome}"
     }
+
+if __name__ == "__main__":
+    FastAPI()
