@@ -2,11 +2,22 @@ from typing import Union
 from fastapi import FastAPI
 from models.models import db, Jogo, Genero
 from fastapi.middleware.cors import CORSMiddleware
-from models.models import db, Jogo, engine, Base
+from models.models import db, Jogo, Genero, engine, Base
 from models.json import JsonJogoAtualizar, JsonJogoRemover, JsonJogoAdicionar
 from sqlalchemy import select
 
 Base.metadata.create_all(engine)
+generos = [
+    "Action", "Adventure", "RPG", "Strategy", "Simulation",
+    "Sports", "Racing", "Fighting", "Shooter", "Puzzle",
+    "Platformer", "Horror", "Survival", "Casual", "Party"
+]
+genero_check = db.get(Genero, 1)
+if not genero_check:
+    for genero in generos:
+        db.add(Genero(nome=genero))
+    db.commit()
+
 app = FastAPI()
 
 origins = [
@@ -25,13 +36,43 @@ app.add_middleware(
 def read_index():
     return {"API Operante"}
 
+@app.get("/get/jogo/{jogo_id}")
+async def get_jogo_info(jogo_id):
+    info = db.get(Jogo, jogo_id)
+    return({"jogo": info.to_dict()})
+
+@app.get("/get/jogos")
+def get_jogos():
+    jogos = []
+    for jogo in db.scalars(select(Jogo)):
+        jogos.append(jogo.to_dict())
+    
+    return {"jogos": jogos}
+
+@app.post("/update/jogo")
+async def update_jogo(json: JsonJogoAtualizar):
+    jogo = db.get(Jogo, json.id)
+
+    if json.nome != jogo.nome and json.nome != "" and json.nome != None:
+        jogo.nome = json.nome
+    if json.status != jogo.status and json.status != "" and json.status != None:
+        jogo.status = json.status
+
+    db.commit()
+
+    return {"mensagem": "Jogo atualizado com sucesso!"}
+  
 #Rota de adicionar jogo
 
 @app.post("/add/jogo")
 def add_jogo(json: JsonJogoAdicionar):
     if json.status == None:
         json.status = "Disponível"
-    jogo = Jogo(nome=str(json.nome), status=str(json.status))
+    generos = []
+    for genero in json.generos:
+        generoalt = db.get(Genero, genero)
+        generos.append(generoalt)
+    jogo = Jogo(nome=str(json.nome), status=str(json.status), generos=generos)
     db.add(jogo)
     db.commit()
     return {
@@ -48,6 +89,7 @@ def remove_jogo(json: JsonJogoRemover):
     return {
         "mensagem":f"Jogo removido nome: {jogo.nome}"
     }
+    
 
 #Rota de adicionar Gênero
 
