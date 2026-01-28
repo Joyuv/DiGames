@@ -2,6 +2,11 @@ from typing import Union
 from fastapi import FastAPI
 from models.models import db, Jogo, Genero
 from fastapi.middleware.cors import CORSMiddleware
+from models.models import db, Jogo, engine, Base
+from models.json import JsonJogoAtualizar, JsonJogoRemover, JsonJogoAdicionar
+from sqlalchemy import select
+
+Base.metadata.create_all(engine)
 app = FastAPI()
 
 origins = [
@@ -45,6 +50,7 @@ def remove_jogo(json: JsonJogoRemover):
     }
 
 #Rota de adicionar Gênero
+
 @app.post("/add/genero")
 def adicionar_jogo(json: JsonGeneroAdicionar):
     if json.status == None:
@@ -56,7 +62,8 @@ def adicionar_jogo(json: JsonGeneroAdicionar):
         "mensagem" : "Gênero adicionado"
     }
 
-#Rota de remover Gẽnero
+#Rota de remover Gênero
+
 @app.post("/remove/jogo")
 def remove_genero(json: JsonGeneroRemover):
     genero = db.get(Genero, json.id)
