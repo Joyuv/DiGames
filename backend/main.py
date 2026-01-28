@@ -38,7 +38,7 @@ def read_index():
 @app.get("/get/jogo/{jogo_id}")
 async def get_jogo_info(jogo_id):
     info = db.get(Jogo, jogo_id)
-    return({"jogo": info})
+    return({"jogo": info.to_dict()})
 
 @app.get("/get/jogos")
 def get_jogos():
@@ -65,7 +65,11 @@ async def update_jogo(json: JsonJogoAtualizar):
 def add_jogo(json: JsonJogoAdicionar):
     if json.status == None:
         json.status = "Disponível"
-    jogo = Jogo(nome=str(json.nome), status=str(json.status))
+    generos = []
+    for genero in json.generos:
+        generoalt = db.get(Genero, genero)
+        generos.append(generoalt)
+    jogo = Jogo(nome=str(json.nome), status=str(json.status), generos=generos)
     db.add(jogo)
     db.commit()
     return {

@@ -8,6 +8,7 @@ class JsonJogoAtualizar(BaseModel):
 class JsonJogoAdicionar(BaseModel):
     nome: str = ""
     status: str = ""
+    generos: list = []
 
 class JsonJogoRemover(BaseModel):
     id: int = 0

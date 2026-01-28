@@ -25,7 +25,10 @@ class Jogo(Base):
     generos: Mapped[List["Genero"]] = relationship(secondary=jogo_genero, back_populates="jogos")
 
     def to_dict(self):
-        return ({"id": self.id, "nome": self.nome, "status": self.status})
+        generosnome = []
+        for genero in self.generos:
+            generosnome.append(genero.nome)
+        return ({"id": self.id, "nome": self.nome, "status": self.status, "generos": generosnome})
     
 
 
