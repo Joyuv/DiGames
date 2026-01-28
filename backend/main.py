@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from models.models import db, Jogo, Genero
 from fastapi.middleware.cors import CORSMiddleware
 from models.models import db, Jogo, Genero, engine, Base
-from models.json import JsonJogoAtualizar, JsonJogoRemover, JsonJogoAdicionar
+from models.json import JsonJogoAtualizar, JsonJogoRemover, JsonJogoAdicionar, JsonGeneroAdicionar, JsonGeneroRemover
 from sqlalchemy import select
 
 Base.metadata.create_all(engine)
