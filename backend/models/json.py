@@ -12,3 +12,9 @@ class JsonJogoAdicionar(BaseModel):
 
 class JsonJogoRemover(BaseModel):
     id: int = 0
+
+class JsonGeneroAdicionar(BaseModel):
+    nome: str = ""
+
+class JsonGeneroRemover(BaseModel):
+    id: int = 0
