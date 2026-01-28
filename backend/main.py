@@ -1,5 +1,6 @@
 from typing import Union
 from fastapi import FastAPI
+from models.models import db, Jogo, Genero
 from fastapi.middleware.cors import CORSMiddleware
 from models.models import db, Jogo, engine, Base
 from models.json import JsonJogoAtualizar, JsonJogoRemover, JsonJogoAdicionar
@@ -24,34 +25,7 @@ app.add_middleware(
 def read_index():
     return {"API Operante"}
 
-@app.get("/get/{jogo_id}")
-async def get_jogo_info(jogo_id):
-    info = db.get(Jogo, jogo_id)
-    return({"jogo": info})
-
-@app.get("/get/jogos")
-def get_jogos():
-    jogos = "fds"
-    # # jogos = []
-    # with db.connection() as conn:
-    #     jogos = conn.execute(select(Jogo)).scalars().all()
-    # for jogo in db.scalars(select(Jogo)):
-    #     jogos.append(jogo.to_dict())
-    
-    return {"jogos": jogos}
-
-@app.post("/update/jogo")
-async def update_jogo(json: JsonJogoAtualizar):
-    jogo = db.get(Jogo, json.id)
-
-    if json.nome != jogo.nome:
-        jogo.nome = json.nome
-    if json.status != jogo.status:
-        jogo.status = json.status
-
-    db.commit()
-
-    return {"mensagem": "Jogo atualizado com sucesso!"}
+#Rota de adicionar jogo
 
 @app.post("/add/jogo")
 def add_jogo(json: JsonJogoAdicionar):
@@ -64,6 +38,8 @@ def add_jogo(json: JsonJogoAdicionar):
         "mensagem":"Jogo adicionado com sucesso!"
     }
 
+#Rota de remover jogo
+
 @app.post("/remove/jogo")
 def remove_jogo(json: JsonJogoRemover):
     jogo = db.get(Jogo, json.id)
@@ -73,5 +49,27 @@ def remove_jogo(json: JsonJogoRemover):
         "mensagem":f"Jogo removido nome: {jogo.nome}"
     }
 
-if __name__ == "__main__":
-    FastAPI()
+#Rota de adicionar Gênero
+
+@app.post("/add/genero")
+def adicionar_jogo(json: JsonGeneroAdicionar):
+    if json.status == None:
+        json.status = "Disponível"
+    genero = Genero(nome=str(json.genero), status=str(json.genero))
+    db.add(genero)
+    db.commit()
+    return {
+        "mensagem" : "Gênero adicionado"
+    }
+
+#Rota de remover Gênero
+
+@app.post("/remove/jogo")
+def remove_genero(json: JsonGeneroRemover):
+    genero = db.get(Genero, json.id)
+    db.delete(genero)
+    db.commit()
+    return {
+        "mensagem" : f"Gênero removido nome {genero.nome}"
+    }
+
