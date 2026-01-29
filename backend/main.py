@@ -53,10 +53,21 @@ def get_jogos():
 async def update_jogo(json: JsonJogoAtualizar):
     jogo = db.get(Jogo, json.id)
 
-    if json.nome != jogo.nome and json.nome != "" and json.nome != None:
+    if json.nome != jogo.nome and json.nome:
         jogo.nome = json.nome
-    if json.status != jogo.status and json.status != "" and json.status != None:
+    if json.status != jogo.status and json.status:
         jogo.status = json.status
+    if json.generosadicionar:
+        for genero in json.generosadicionar:
+            if genero in jogo.generos: pass
+            else:
+                jogo.generos.append(genero)
+
+    if json.generosremover:
+        for genero in json.generosremover:
+            if genero in jogo.generos:
+                jogo.generos.pop(jogo.generos.index(genero))
+            else: pass
 
     db.commit()
 
