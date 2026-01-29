@@ -106,7 +106,7 @@ def adicionar_jogo(json: JsonGeneroAdicionar):
 
 #Rota de remover Gênero
 
-@app.post("/remove/jogo")
+@app.post("/remove/genero")
 def remove_genero(json: JsonGeneroRemover):
     genero = db.get(Genero, json.id)
     db.delete(genero)
