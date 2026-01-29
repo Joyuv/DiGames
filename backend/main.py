@@ -1,9 +1,9 @@
 from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from models.models import db, Jogo, Genero
 from fastapi.middleware.cors import CORSMiddleware
 from models.models import db, Jogo, Genero, engine, Base
-from models.json import JsonJogoAtualizar, JsonJogoRemover, JsonJogoAdicionar, JsonGeneroAdicionar, JsonGeneroRemover
+from models.json import JsonJogoAtualizar, JsonJogoAdicionar, JsonGeneroAdicionar
 from sqlalchemy import select
 
 Base.metadata.create_all(engine)
@@ -39,6 +39,8 @@ def read_index():
 @app.get("/get/jogo/{jogo_id}")
 async def get_jogo_info(jogo_id):
     info = db.get(Jogo, jogo_id)
+    if not info:
+        raise HTTPException(status_code=404, detail="Jogo não encontrado")
     return({"jogo": info.to_dict()})
 
 @app.get("/get/jogos")
@@ -53,10 +55,24 @@ def get_jogos():
 async def update_jogo(json: JsonJogoAtualizar):
     jogo = db.get(Jogo, json.id)
 
-    if json.nome != jogo.nome and json.nome != "" and json.nome != None:
+    if json.nome != jogo.nome and json.nome:
         jogo.nome = json.nome
-    if json.status != jogo.status and json.status != "" and json.status != None:
+    if json.status != jogo.status and json.status:
         jogo.status = json.status
+    if json.generosadicionar:
+        for generoid in json.generosadicionar:
+            genero = db.get(Genero, generoid)
+            if genero in jogo.generos: pass
+            else:
+                jogo.generos.append(genero)
+
+    if json.generosremover:
+        for generoid in json.generosremover:
+            genero = db.get(Genero, generoid)
+            if genero in jogo.generos:
+                jogo.generos.remove(genero)
+            else:
+                raise HTTPException(status_code=400, detail="Jogo não possui esse gênero")
 
     db.commit()
 
@@ -81,9 +97,9 @@ def add_jogo(json: JsonJogoAdicionar):
 
 #Rota de remover jogo
 
-@app.post("/remove/jogo")
-def remove_jogo(json: JsonJogoRemover):
-    jogo = db.get(Jogo, json.id)
+@app.post("/remove/jogo/{id}")
+def remove_jogo(id: int):
+    jogo = db.get(Jogo, id)
     db.delete(jogo)
     db.commit()
     return {
@@ -95,9 +111,7 @@ def remove_jogo(json: JsonJogoRemover):
 
 @app.post("/add/genero")
 def adicionar_jogo(json: JsonGeneroAdicionar):
-    if json.status == None:
-        json.status = "Disponível"
-    genero = Genero(nome=str(json.genero), status=str(json.genero))
+    genero = Genero(nome=str(json.genero))
     db.add(genero)
     db.commit()
     return {
@@ -106,9 +120,9 @@ def adicionar_jogo(json: JsonGeneroAdicionar):
 
 #Rota de remover Gênero
 
-@app.post("/remove/genero")
-def remove_genero(json: JsonGeneroRemover):
-    genero = db.get(Genero, json.id)
+@app.post("/remove/genero/{id}")
+def remove_genero(id: int):
+    genero = db.get(Genero, id)
     db.delete(genero)
     db.commit()
     return {
