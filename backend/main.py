@@ -73,6 +73,12 @@ async def update_jogo(json: JsonJogoAtualizar):
                 jogo.generos.remove(genero)
             else:
                 raise HTTPException(status_code=400, detail="Jogo não possui esse gênero")
+    
+    if json.preco >= 0 and json.preco != jogo.preco:
+        jogo.preco = json.preco
+    
+    if json.descricao and json.descricao != jogo.descricao:
+        jogo.descricao = json.descricao
 
     db.commit()
 
@@ -88,7 +94,9 @@ def add_jogo(json: JsonJogoAdicionar):
     for genero in json.generos:
         generoalt = db.get(Genero, genero)
         generos.append(generoalt)
-    jogo = Jogo(nome=str(json.nome), status=str(json.status), generos=generos)
+    if json.preco < 0:
+        json.preco = 0
+    jogo = Jogo(nome=str(json.nome), status=str(json.status), generos=generos, preco=json.preco, descricao=json.descricao)
     db.add(jogo)
     db.commit()
     return {

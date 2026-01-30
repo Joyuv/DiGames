@@ -1,4 +1,4 @@
-from sqlalchemy import String, create_engine, ForeignKey, Table, Column
+from sqlalchemy import String, create_engine, ForeignKey, Table, Column, Numeric
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session, relationship
 from typing import List, Optional
 
@@ -19,8 +19,10 @@ class Jogo(Base):
     __tablename__ = "jogos"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    nome: Mapped[str] = mapped_column()
+    nome: Mapped[str] = mapped_column(unique=True)
     status: Mapped[str] = mapped_column()
+    preco: Mapped[Numeric] = mapped_column(Numeric(10,2))
+    descricao: Mapped[str] = mapped_column()
 
     generos: Mapped[List["Genero"]] = relationship(secondary=jogo_genero, back_populates="jogos")
 
