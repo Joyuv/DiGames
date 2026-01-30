@@ -9,8 +9,10 @@ export default function FormPublicarJogo() {
 			<Card>
 				<Label htmlFor="nome">Nome do Jogo</Label>
 				<Input name="nome" id="nome"/>
-				<Label htmlFor="teste">Só pra teste</Label>
-				<Input name="teste" id="teste"/>
+				<Label htmlFor="descricao">Descrição</Label>
+				<Input name="descricao" id="descricao"/>
+				<Label htmlFor="preco">Preço</Label>
+				<Input name="preco" id="preco"/>
 				<Button type="submit">Enviar</Button>
 			</Card>
 		</form>
