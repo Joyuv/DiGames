@@ -11,7 +11,7 @@ export default function Input({ ...props }: ComponentProps<"input">) {
         border border-slate-600 focus:border-current
         bg-slate-700
         px-2 py-1
-        mb-4
+        mb-3
       "
     />
   );
