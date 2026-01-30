@@ -8,10 +8,10 @@ export default function Input({ ...props }: ComponentProps<"input">) {
       className="
         outline-0
         rounded
-        border border-slate-600 focus:border-current
+        border border-slate-600 focus:border-indigo-500
         bg-slate-700
         px-2 py-1
-        mb-3
+        shadow-md
       "
     />
   );

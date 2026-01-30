@@ -6,6 +6,6 @@ interface LabelProps extends ComponentProps<"label"> {
 
 export default function Label({ children, ...props }: LabelProps) {
   return(
-    <label className="select-none mb-2" {...props} >{children}</label>
+    <label className="select-none block" {...props} >{children}</label>
   );
 }
