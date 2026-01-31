@@ -11,7 +11,7 @@ export default function Select({ children, ...props }: SelectProps) {
 			bg-slate-700 
 			rounded border border-slate-600 focus:border-indigo-500
 			shadow-md
-			py-2"
+			p-2"
 		>
 			{children}
 		</select>
