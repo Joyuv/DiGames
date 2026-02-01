@@ -1,11 +1,12 @@
 "use server";
 
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { GET_JOGOS_URL, POST_ADD_JOGO_URL } from "@/routes/routes";
+import { ResponseJogos } from "@/types/jogo";
 
 export async function getJogos() {
   try {
-    const response = await axios.get(GET_JOGOS_URL());
+    const response = await axios.get<ResponseJogos>(GET_JOGOS_URL());
     return response.data;
   } catch (error) {
     console.error(error);
