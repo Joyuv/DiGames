@@ -1,10 +1,28 @@
-import { ComponentProps } from "react";
+"use client";
 
+import { ComponentProps, FormEvent, HTMLInputTypeAttribute } from "react";
 
+interface InputProps extends ComponentProps<"input"> {
+  type?: HTMLInputTypeAttribute | "price";
+}
 
-export default function Input({ ...props }: ComponentProps<"input">) {
-  return(
-    <input {...props} 
+function formatToPrice(
+  event: FormEvent<HTMLInputElement>
+) {
+  const input = event.currentTarget;
+  const numbersOnly = input.value.replace(/\D/g, "");
+
+  if (!numbersOnly) return;
+
+  const value = Number(numbersOnly) / 100;
+  input.value = value.toFixed(2).replace(".", ",");
+}
+
+export default function Input({ type, ...props }: InputProps) {
+  return (
+    <input
+      {...props}
+      onInput={type === "price" ? formatToPrice : () => {}}
       className="
         outline-0
         rounded
