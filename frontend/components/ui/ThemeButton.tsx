@@ -1,15 +1,13 @@
 "use client"
 
+import useMounted from "@/hooks/isMounted";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 
 
 export default function ThemeButton() {
   const { theme, setTheme } = useTheme();
-  // v evitar hydratation warning ao atualizar página v
-  const [ mounted, setMounted ] = useState(false); 
-  // ^ evitar hydratation warning ao atualizar página ^
+  const isMounted = useMounted();
   
   function toggleTheme() {
     const elemento = document.getElementById("toggle-theme");
@@ -17,11 +15,7 @@ export default function ThemeButton() {
     setTheme(theme === "dark" ? "light" : "dark");
   }
 
-  useEffect(() => {
-    setMounted(true);
-  }, [theme]);
-
-  if (!mounted) return null;
+  if (!isMounted) return null;
 
   return(
     <>

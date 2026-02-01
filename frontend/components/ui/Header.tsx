@@ -13,7 +13,7 @@ export default function Header() {
 				bg-slate-950
 				bg-linear-to-b from-slate-900 to-slate-800
 				border-b border-slate-700
-
+				shadow-md
 			"
 		>
 			<Link href="/">
