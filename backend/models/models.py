@@ -30,7 +30,7 @@ class Jogo(Base):
         generos = []
         for genero in self.generos:
             generos.append(genero.to_dict())
-        return ({"id": self.id, "nome": self.nome, "status": self.status, "generos": generos})
+        return ({"id": self.id, "nome": self.nome, "status": self.status, "generos": generos, "preco": self.preco, "descricao": self.descricao })
     
 
 
