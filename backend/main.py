@@ -138,7 +138,7 @@ def remove_genero(id: int):
     }
 
 @app.get("/get/generos")
-def get_generos:
+def get_generos():
     generos = []
     for genero in db.scalars(select(Genero)):
         generos.append(genero.to_dict())
