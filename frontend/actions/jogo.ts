@@ -1,6 +1,6 @@
 "use server";
 
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { GET_JOGOS_URL, POST_ADD_JOGO_URL } from "@/routes/routes";
 import { ResponseJogos } from "@/types/jogo";
 
