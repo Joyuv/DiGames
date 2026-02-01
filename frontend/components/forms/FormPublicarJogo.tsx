@@ -5,6 +5,7 @@ import Input from "../ui/Input";
 import Label from "../ui/Label";
 import Select from "../ui/Select";
 import TextArea from "../ui/TextArea";
+import SelectGeneros from "../ui/SelectGeneros";
 
 export default function FormPublicarJogo() {
   async function onSubmit(formData: FormData) {
@@ -63,6 +64,10 @@ export default function FormPublicarJogo() {
         <div className="grid">
           <Label htmlFor="descricao">Descrição</Label>
           <TextArea required rows={6} name="descricao" id="descricao" />
+        </div>
+
+        <div className="grid">
+          <SelectGeneros/>
         </div>
 
         <Button type="submit">Enviar</Button>
