@@ -118,7 +118,7 @@ def remove_jogo(id: int):
 #Rota de adicionar Gênero
 
 @app.post("/add/genero")
-def adicionar_jogo(json: JsonGeneroAdicionar):
+def add_genero(json: JsonGeneroAdicionar):
     genero = Genero(nome=str(json.genero))
     db.add(genero)
     db.commit()
@@ -136,4 +136,12 @@ def remove_genero(id: int):
     return {
         "mensagem" : f"Gênero removido nome {genero.nome}"
     }
+
+@app.get("/get/generos")
+def get_generos:
+    generos = []
+    for genero in db.scalars(select(Genero)):
+        generos.append(genero.to_dict())
+
+    return {"generos": generos}
 
