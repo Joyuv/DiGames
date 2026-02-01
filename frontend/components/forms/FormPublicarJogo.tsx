@@ -16,7 +16,7 @@ export default function FormPublicarJogo() {
       preco: parseFloat((formData.get("preco") as string).replace(",", ".")),
       descricao: formData.get("descricao") as string,
       status: formData.get("status") as string,
-      generos: [1, 2, 3], // FALTA IMPLEMENTAR
+      generos: JSON.parse(formData.get("generos") as string) as number[], // FALTA IMPLEMENTAR
     };
 
     await addJogo(

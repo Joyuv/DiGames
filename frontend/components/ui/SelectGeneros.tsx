@@ -13,6 +13,7 @@ interface GeneroOption {
 
 export default function SelectGeneros() {
   const [generosOptions, setGenerosOptions] = useState<GeneroOption[]>([]);
+  const [selectedGeneros, setSelectedGeneros] = useState<GeneroOption[]>([]);
   const isMounted = useMounted();
 
   useEffect(() => {
@@ -35,44 +36,48 @@ export default function SelectGeneros() {
   if (!isMounted) return null;
 
   return (
-    <Select
-      theme={(theme) => ({
-        ...theme,
-        outline: 0,
-        colors: {
-          ...theme.colors,
-          primary25: "var(--color-slate-600)",
-          primary: "var(--color-slate-600)",
-          neutral0: "var(--color-slate-700)",
-          neutral10: "var(--color-slate-600)", // background da opção selecionada
-          neutral80: "var(--color-neutral)", // fonte da opção selecionada
-          // neutral5: "pink",
-          neutral20: "var(--color-slate-600)", // borda do select, barrinha vertical, X e Seta
-          neutral30: "", // hover da borda do select
-          neutral40: "var(--color-indigo-500)", // hover dos botões
-          neutral50: "var(--color-neutral)", // cor da fonte do texto Select...
-          neutral60: "var(--color-slate-500)", // foco de X e Seta
-          // neutral70: "yellow",
-          // neutral90: "blue",
-          danger: "var(--color-indigo-500)",
-          dangerLight: "var(--color-indigo-400)",
-        },
-      })}
-      styles={{
-        control: (baseStyles, state) => ({
-          ...baseStyles,
-          boxShadow: "none",
-          borderColor: state.isFocused
-            ? "var(--color-indigo-500)"
-            : "var(--color-slate-600)",
-        }),
-      }}
-      isMulti
-      name="generos"
-      options={generosOptions}
-      required
-      className=""
-      // classNamePrefix="select"
-    />
+    <>
+      <Select
+        theme={(theme) => ({
+          ...theme,
+          outline: 0,
+          colors: {
+            ...theme.colors,
+            primary25: "var(--color-slate-600)",
+            primary: "var(--color-slate-600)",
+            neutral0: "var(--color-slate-700)",
+            neutral10: "var(--color-slate-600)",
+            neutral80: "var(--color-neutral)",
+            neutral20: "var(--color-slate-600)",
+            neutral30: "",
+            neutral40: "var(--color-indigo-500)",
+            neutral50: "var(--color-neutral)",
+            neutral60: "var(--color-slate-500)",
+            danger: "var(--color-indigo-500)",
+            dangerLight: "var(--color-indigo-400)",
+          },
+        })}
+        styles={{
+          control: (baseStyles, state) => ({
+            ...baseStyles,
+            boxShadow: "none",
+            borderColor: state.isFocused
+              ? "var(--color-indigo-500)"
+              : "var(--color-slate-600)",
+          }),
+        }}
+        isMulti
+        value={selectedGeneros}
+        onChange={(newValue) => setSelectedGeneros(newValue as GeneroOption[])}
+        options={generosOptions}
+        required
+        className=""
+      />
+      <input
+        type="hidden"
+        name="generos"
+        value={JSON.stringify(selectedGeneros.map(g => g.value))}
+      />
+    </>
   );
 }
