@@ -1,3 +1,5 @@
+"use client";
+
 import { addJogo } from "@/actions/jogo";
 import Button from "../ui/Button";
 import Card from "../ui/Card";
@@ -6,26 +8,36 @@ import Label from "../ui/Label";
 import Select from "../ui/Select";
 import TextArea from "../ui/TextArea";
 import SelectGeneros from "../ui/SelectGeneros";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 export default function FormPublicarJogo() {
+  const router = useRouter();
+
   async function onSubmit(formData: FormData) {
-    "use server";
+    // "use server";
 
     const data = {
       nome: formData.get("nome") as string,
       preco: parseFloat((formData.get("preco") as string).replace(",", ".")),
       descricao: formData.get("descricao") as string,
       status: formData.get("status") as string,
-      generos: JSON.parse(formData.get("generos") as string) as number[], // FALTA IMPLEMENTAR
+      generos: JSON.parse(formData.get("generos") as string) as number[],
     };
 
-    await addJogo(
+    const newData = await addJogo(
       data.nome,
       data.preco,
       data.descricao,
       data.status,
       data.generos,
     );
+
+    Swal.fire({
+      title: "Sucesso!",
+      text: "Jogo publicado com êxito",
+      icon: "success",
+    }).then(() =>router.push(`/`)); // mandar pra pagina do jogo quando tiver pronto na api
   }
 
   return (

@@ -4,7 +4,6 @@ import CardJogo from "@/components/ui/CardJogo";
 
 export default async function Home() {
   const data = await getJogos();
-  console.log(data);
 
   return (
     <section className="mx-auto">
