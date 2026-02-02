@@ -58,7 +58,7 @@ export default function JogoPage() {
     <div className="flex-1">
       <Card>
         <div className="flex flex-1">
-          <div className="space-y-2">
+          <div className="space-y-5">
             <div
               className="
                 h-50
@@ -68,34 +68,40 @@ export default function JogoPage() {
               "
             >
             </div>
-            <h2 className="text-xl text-emphasis">{jogo?.nome}</h2>
-            <p>R$ {String(jogo?.preco).replace(".", ",")}</p>
-            <p>{jogo?.status}</p>
+
+            <div className="space-x-3">
+              <Button>Editar</Button>
+              <Button onClick={handleDelete}>Deletar</Button>
+            </div>
           </div>
 
-          <div className="flex-1">
-            <p className="mx-5 break-all">
-              {jogo?.descricao}
-            </p>
+          <div className="flex flex-col flex-1 ml-5 gap-2">
+            <h2 className="text-xl text-emphasis break-all">{jogo?.nome}</h2>
+            
+            <p>R$ {String(jogo?.preco).replace(".", ",")}</p>
+            
+            <p>{jogo?.status}</p>
+
+            <div className="space-x-3">
+              {jogo?.generos.map((genero)=> (
+                <span 
+                  className="bg-slate-700 border border-slate-600 rounded p-1"
+                  key={genero.id}
+                >
+                  {genero.nome}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-between">
-          <div className="space-x-3">
-            {jogo?.generos.map((genero)=> (
-              <span 
-                className="bg-slate-700 border border-slate-600 rounded p-1"
-                key={genero.id}
-              >
-                {genero.nome}
-              </span>
-            ))}
-          </div>
-          
-          <div className="space-x-3">
-            <Button>Editar</Button>
-            <Button onClick={handleDelete}>Deletar</Button>
-          </div>
+        <hr />
+        
+        <div>
+          <h3 className="text-xl text-emphasis">Descrição</h3>
+          <p className="break-all">
+            {jogo?.descricao}
+          </p>
         </div>
       </Card>
     </div>
