@@ -1,15 +1,17 @@
 "use client";
 
-import { getJogo } from "@/actions/jogo";
+import { deleteJogo, getJogo } from "@/actions/jogo";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { Jogo } from "@/types/jogo";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function JogoPage() {
-  const [ jogo, setJogo ] = useState<Jogo | undefined>();
+  const router = useRouter();
   const params = useParams<{ id: string; }>();
+  const [ jogo, setJogo ] = useState<Jogo | undefined>();
 
   useEffect(() => {
     async function fetchJogo() {
@@ -24,6 +26,13 @@ export default function JogoPage() {
     }
     fetchJogo();
   }, []);
+
+  async function handleDelete() {
+    // modal de confirmação para deletar o jogo
+
+    const data = await deleteJogo(params.id)
+    router.push("/");
+  }
   
   return(
     <div className="flex-1">
@@ -65,7 +74,7 @@ export default function JogoPage() {
           
           <div className="space-x-3">
             <Button>Editar</Button>
-            <Button>Deletar</Button>
+            <Button onClick={handleDelete}>Deletar</Button>
           </div>
         </div>
       </Card>

@@ -1,8 +1,8 @@
 "use server";
 
 import axios from "axios";
-import { GET_JOGO_URL, GET_JOGOS_URL, POST_ADD_JOGO_URL } from "@/routes/routes";
-import { ResponseJogo, ResponseJogos } from "@/types/jogo";
+import { DELETE_JOGO_URL, GET_JOGO_URL, GET_JOGOS_URL, POST_ADD_JOGO_URL } from "@/routes/routes";
+import { ResponseDeleteJogo, ResponseJogo, ResponseJogos } from "@/types/jogo";
 
 export async function getJogos() {
   try {
@@ -16,6 +16,14 @@ export async function getJogos() {
 export async function getJogo(id: string | number) {
   try {
     const response = await axios.get<ResponseJogo>(GET_JOGO_URL(id));
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+export async function deleteJogo(id: string | number) {
+  try {
+    const response = await axios.post<ResponseDeleteJogo>(DELETE_JOGO_URL(id));
     return response.data;
   } catch (error) {
     console.error(error);

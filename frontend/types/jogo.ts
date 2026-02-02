@@ -16,3 +16,7 @@ export interface ResponseJogo {
 export interface ResponseJogos {
 	jogos: Jogo[];
 }
+
+export interface ResponseDeleteJogo {
+  mensagem: string;
+}
