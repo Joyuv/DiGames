@@ -20,6 +20,7 @@ export default function Button({ children, ...props }: ButtonProps) {
 			bg-indigo-500 hover:bg-indigo-600 rounded  
 				cursor-pointer
 				py-2
+				px-2
 				hover:shadow-sm hover:shadow-indigo-200
 				${ theme === "dark" ? "text-emphasis hover:shadow-indigo-900" : "text-slate-950"}
 			`} 

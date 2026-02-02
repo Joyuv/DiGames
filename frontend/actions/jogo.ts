@@ -1,12 +1,21 @@
 "use server";
 
 import axios from "axios";
-import { GET_JOGOS_URL, POST_ADD_JOGO_URL } from "@/routes/routes";
-import { ResponseJogos } from "@/types/jogo";
+import { GET_JOGO_URL, GET_JOGOS_URL, POST_ADD_JOGO_URL } from "@/routes/routes";
+import { ResponseJogo, ResponseJogos } from "@/types/jogo";
 
 export async function getJogos() {
   try {
     const response = await axios.get<ResponseJogos>(GET_JOGOS_URL());
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getJogo(id: string | number) {
+  try {
+    const response = await axios.get<ResponseJogo>(GET_JOGO_URL(id));
     return response.data;
   } catch (error) {
     console.error(error);
