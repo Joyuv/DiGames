@@ -30,9 +30,13 @@ export default function CardJogo({ jogo, key }: CardJogoProps) {
         "
       ></div>
 
-      <div>
-        {jogo.nome}
-        {jogo.preco}
+      <div className="grid gap-2">
+        <p className="text-lg">
+          {jogo.nome}
+        </p>
+        <p>
+          R$ {String(jogo.preco).replace(".", ",")}
+        </p>
       </div>
     </Card>
   );
