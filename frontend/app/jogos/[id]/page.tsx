@@ -6,7 +6,9 @@ import Card from "@/components/ui/Card";
 import { Jogo } from "@/types/jogo";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { title } from "process";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function JogoPage() {
   const router = useRouter();
@@ -29,11 +31,31 @@ export default function JogoPage() {
 
   async function handleDelete() {
     // modal de confirmação para deletar o jogo
+    Swal.fire({
+      title: "Deletar jogo",
+      text: "Tem certeza que deseja deletar este jogo?",
+      icon: "warning",
+      confirmButtonText: "Sim",
+      showCancelButton: true,
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
 
-    const data = await deleteJogo(params.id)
-    router.push("/");
+    }).then(async (result)=>{
+      if (result.isConfirmed) {
+        await deleteJogo(params.id);
+        Swal.fire({
+          title: "Sucesso!",
+          text: "Jogo deletado com êxito",
+          icon: "success",
+        }).then(
+          ()=>router.push("/")
+        );
+      }
+    });
   }
   
+  if (!jogo) return null;
+
   return(
     <div className="flex-1">
       <Card>
