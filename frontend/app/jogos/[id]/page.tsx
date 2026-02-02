@@ -6,7 +6,6 @@ import Card from "@/components/ui/Card";
 import { Jogo } from "@/types/jogo";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { title } from "process";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
@@ -30,7 +29,6 @@ export default function JogoPage() {
   }, []);
 
   async function handleDelete() {
-    // modal de confirmação para deletar o jogo
     Swal.fire({
       title: "Deletar jogo",
       text: "Tem certeza que deseja deletar este jogo?",
