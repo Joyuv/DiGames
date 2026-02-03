@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteJogo, getJogo } from "@/actions/jogo";
+import { deleteJogo } from "@/actions/jogo";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import useJogo from "@/hooks/jogo";
