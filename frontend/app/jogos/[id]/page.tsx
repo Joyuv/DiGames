@@ -70,7 +70,7 @@ export default function JogoPage() {
             </div>
 
             <div className="space-x-3">
-              <Button>Editar</Button>
+              <Button onClick={()=>router.push(`/jogos/${params.id}/atualizar`)}>Editar</Button>
               <Button onClick={handleDelete}>Deletar</Button>
             </div>
           </div>
