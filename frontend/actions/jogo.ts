@@ -1,7 +1,7 @@
 "use server";
 
 import axios from "axios";
-import { DELETE_JOGO_URL, GET_JOGO_URL, GET_JOGOS_URL, POST_ADD_JOGO_URL } from "@/routes/routes";
+import { DELETE_JOGO_URL, GET_JOGO_URL, GET_JOGOS_URL, POST_ADD_JOGO_URL, UPDATE_JOGO_URL } from "@/routes/routes";
 import { ResponseDeleteJogo, ResponseJogo, ResponseJogos } from "@/types/jogo";
 
 export async function getJogos() {
@@ -47,6 +47,30 @@ export async function addJogo(
     };
 
     const response = await axios.post(POST_ADD_JOGO_URL(), data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function updateJogo(
+  id: string | number,
+  nome: string,
+  preco: number,
+  descricao: string,
+  status: string,
+	generos: number[],
+) {
+  try {
+    const data = {
+      nome: nome,
+      preco: preco,
+      descricao: descricao,
+			status: status,
+      generos: generos,
+    };
+
+    const response = await axios.post(UPDATE_JOGO_URL(id), data);
     return response.data;
   } catch (error) {
     console.error(error);
