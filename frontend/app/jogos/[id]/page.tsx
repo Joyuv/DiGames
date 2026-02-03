@@ -3,30 +3,15 @@
 import { deleteJogo, getJogo } from "@/actions/jogo";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import { Jogo } from "@/types/jogo";
+import useJogo from "@/hooks/jogo";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 export default function JogoPage() {
   const router = useRouter();
   const params = useParams<{ id: string; }>();
-  const [ jogo, setJogo ] = useState<Jogo | undefined>();
-
-  useEffect(() => {
-    async function fetchJogo() {
-      const data = await getJogo(params.id);
-
-      if (data?.jogo) {
-        setJogo(data.jogo);
-        return;
-      }
-      
-      // modal de feedback falando que não encontrou o jogo
-    }
-    fetchJogo();
-  }, []);
+  const jogo = useJogo(params?.id);
 
   async function handleDelete() {
     Swal.fire({

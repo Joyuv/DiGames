@@ -2,18 +2,20 @@
 
 import { getGeneros } from "@/actions/genero";
 import useMounted from "@/hooks/isMounted";
-import { Genero } from "@/types/genero";
+import { GeneroOption } from "@/types/genero";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 
-interface GeneroOption {
-  value: number;
-  label: string;
+interface SelectGenerosProps {
+  generosDefault?: GeneroOption[];
 }
 
-export default function SelectGeneros() {
+export default function SelectGeneros({
+  generosDefault = [],
+}: SelectGenerosProps) {
   const [generosOptions, setGenerosOptions] = useState<GeneroOption[]>([]);
-  const [selectedGeneros, setSelectedGeneros] = useState<GeneroOption[]>([]);
+  const [selectedGeneros, setSelectedGeneros] =
+    useState<GeneroOption[]>(generosDefault);
   const isMounted = useMounted();
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function SelectGeneros() {
       <input
         type="hidden"
         name="generos"
-        value={JSON.stringify(selectedGeneros.map(g => g.value))}
+        value={JSON.stringify(selectedGeneros.map((g) => g.value))}
       />
     </>
   );
