@@ -1,4 +1,3 @@
-from typing import Union
 from fastapi import FastAPI, HTTPException
 from models.models import db, Jogo, Genero
 from fastapi.middleware.cors import CORSMiddleware
@@ -36,9 +35,9 @@ app.add_middleware(
 def read_index():
     return {"API Operante"}
 
-@app.get("/get/jogo/{jogo_id}")
-async def get_jogo_info(jogo_id):
-    info = db.get(Jogo, jogo_id)
+@app.get("/get/jogo/{id}")
+async def get_jogo_info(id):
+    info = db.get(Jogo, id)
     if not info:
         raise HTTPException(status_code=404, detail="Jogo não encontrado")
     return({"jogo": info.to_dict()})
@@ -51,28 +50,23 @@ def get_jogos():
     
     return {"jogos": jogos}
 
-@app.post("/update/jogo")
-async def update_jogo(json: JsonJogoAtualizar):
-    jogo = db.get(Jogo, json.id)
+@app.post("/update/jogo/{id}")
+async def update_jogo(json: JsonJogoAtualizar, id: str):
+    jogo = db.get(Jogo, id)
+
+    print(json)
 
     if json.nome != jogo.nome and json.nome:
         jogo.nome = json.nome
     if json.status != jogo.status and json.status:
         jogo.status = json.status
-    if json.generosadicionar:
-        for generoid in json.generosadicionar:
-            genero = db.get(Genero, generoid)
-            if genero in jogo.generos: pass
-            else:
-                jogo.generos.append(genero)
-
-    if json.generosremover:
-        for generoid in json.generosremover:
-            genero = db.get(Genero, generoid)
-            if genero in jogo.generos:
-                jogo.generos.remove(genero)
-            else:
-                raise HTTPException(status_code=400, detail="Jogo não possui esse gênero")
+    
+    if json.generos != jogo.generos and json.generos:
+        generos = []
+        for genero_id in json.generos:
+            genero = db.get(Genero, genero_id)
+            generos.append(genero)
+        jogo.generos = generos
     
     if json.preco >= 0 and json.preco != jogo.preco:
         jogo.preco = json.preco
