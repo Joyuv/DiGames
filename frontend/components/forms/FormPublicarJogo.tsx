@@ -66,9 +66,9 @@ export default function FormPublicarJogo() {
               <option value="" disabled>
                 Selecione
               </option>
-              <option value="disponivel">Disponível</option>
-              <option value="indisponivel">Indisponível</option>
-              <option value="pre-venda">Pré-Venda</option>
+              <option value="Disponível">Disponível</option>
+              <option value="Indisponível">Indisponível</option>
+              <option value="Pré-venda">Pré-venda</option>
             </Select>
           </div>
         </div>
