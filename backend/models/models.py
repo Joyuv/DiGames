@@ -2,7 +2,8 @@ from sqlalchemy import String, create_engine, ForeignKey, Table, Column, Numeric
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session, relationship
 from typing import List, Optional
 
-engine = create_engine("sqlite:///banco.db", echo=True)
+# engine = create_engine("sqlite:///banco.db", echo=True)
+engine = create_engine("sqlite:///banco.db")
 db = Session(engine)
 
 class Base(DeclarativeBase):
