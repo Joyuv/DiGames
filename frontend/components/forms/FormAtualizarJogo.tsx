@@ -15,7 +15,7 @@ export default function FormAtualizarJogo({ id }: FormAtualizarJogoProps) {
   const jogo = useJogo(id);
 
   if (!jogo) return null;
-  
+
   async function onSubmit(formData: FormData) {
     const data = {
       id: String(jogo?.id),
@@ -26,20 +26,28 @@ export default function FormAtualizarJogo({ id }: FormAtualizarJogoProps) {
       generos: JSON.parse(formData.get("generos") as string) as number[],
     };
 
-    const newData = await updateJogo(
-      data.id,
-      data.nome,
-      data.preco,
-      data.descricao,
-      data.status,
-      data.generos,
-    );
+    if (data.nome.length >= 3) {
+      const newData = await updateJogo(
+        data.id,
+        data.nome,
+        data.preco,
+        data.descricao,
+        data.status,
+        data.generos,
+      );
 
-    Swal.fire({
-      title: "Sucesso!",
-      text: "Jogo atualizado com êxito",
-      icon: "success",
-    }).then(() =>router.push(`/`)); // mandar pra pagina do jogo quando tiver pronto na api
+      Swal.fire({
+        title: "Sucesso!",
+        text: "Jogo atualizado com êxito",
+        icon: "success",
+      }).then(() => router.push(`/`)); // mandar pra pagina do jogo quando tiver pronto na api
+    } else {
+      Swal.fire({
+        title: "Erro",
+        text: "O nome do jogo deve ter no mínimo 3 dígitos",
+        icon: "error",
+      });
+    }
   }
 
   const precoFormated = String(jogo?.preco.toFixed(2)).replace(".", ",");
