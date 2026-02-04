@@ -34,6 +34,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Handler para erros de validação do Pydantic
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -52,26 +53,25 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         }
     )
 
-@app.get("/")
-def read_index():
-    return {"API Operante"}
-
-@app.get("/get/jogo/{id}")
-async def get_jogo_info(id):
-    info = db.get(Jogo, id)
-    if not info:
-        raise HTTPException(status_code=404, detail="Jogo não encontrado")
-    return({"jogo": info.to_dict()})
-
-@app.get("/get/jogos")
+  
+# Rota de pegar dados de todos os jogos
+@app.get("/jogos")
 def get_jogos():
     jogos = []
     for jogo in db.scalars(select(Jogo)):
         jogos.append(jogo.to_dict())
     
     return {"jogos": jogos}
+# Rota de pegar dados de um jogo específico
+@app.get("/jogos/{id}")
+async def get_jogo_info(id):
+    info = db.get(Jogo, id)
+    if not info:
+        raise HTTPException(status_code=404, detail="Jogo não encontrado")
+    return({"jogo": info.to_dict()})
 
-@app.post("/update/jogo/{id}")
+# Rota de atualizar jogo
+@app.put("/jogos/{id}")
 async def update_jogo(json: JsonJogoAtualizar, id: str):
     try:
         jogo = db.get(Jogo, id)
@@ -131,9 +131,9 @@ async def update_jogo(json: JsonJogoAtualizar, id: str):
             }
         )
   
-#Rota de adicionar jogo
 
-@app.post("/add/jogo")
+# Rota de remover jogo
+@app.post("/jogos")
 def add_jogo(json: JsonJogoAdicionar):
     try:
         if json.status == None or json.status == "":
@@ -178,7 +178,7 @@ def add_jogo(json: JsonJogoAdicionar):
 
 #Rota de remover jogo
 
-@app.post("/remove/jogo/{id}")
+@app.delete("/jogos/{id}")
 def remove_jogo(id: int):
     try:
         jogo = db.get(Jogo, id)
@@ -208,10 +208,17 @@ def remove_jogo(id: int):
             }
         )
     
+# Rota de pegar todos os gêneros
+@app.get("/generos")
+def get_generos():
+    generos = []
+    for genero in db.scalars(select(Genero)):
+        generos.append(genero.to_dict())
 
-#Rota de adicionar Gênero
+    return {"generos": generos}
 
-@app.post("/add/genero")
+# Rota de adicionar Gênero
+@app.post("/generos")
 def add_genero(json: JsonGeneroAdicionar):
     try:
         if not json.nome or len(json.nome.strip()) < 3:
@@ -243,9 +250,8 @@ def add_genero(json: JsonGeneroAdicionar):
             }
         )
 
-#Rota de remover Gênero
-
-@app.post("/remove/genero/{id}")
+# Rota de remover Gênero
+@app.delete("/generos/{id}")
 def remove_genero(id: int):
     try:
         genero = db.get(Genero, id)
@@ -274,12 +280,4 @@ def remove_genero(id: int):
                 "erro": str(e)
             }
         )
-
-@app.get("/get/generos")
-def get_generos():
-    generos = []
-    for genero in db.scalars(select(Genero)):
-        generos.append(genero.to_dict())
-
-    return {"generos": generos}
 
