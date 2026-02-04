@@ -94,7 +94,8 @@ def add_jogo(json: JsonJogoAdicionar):
     db.add(jogo)
     db.commit()
     return {
-        "mensagem":"Jogo adicionado com sucesso!"
+        "mensagem":"Jogo adicionado com sucesso!",
+        "Jogo": jogo.to_dict()
     }
 
 #Rota de remover jogo
