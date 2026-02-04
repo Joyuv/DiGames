@@ -1,5 +1,4 @@
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException
 from models.models import db, Jogo, Genero
 from fastapi.middleware.cors import CORSMiddleware
 from models.models import db, Jogo, Genero, engine, Base
@@ -32,12 +31,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-STATUS_PERMITIDOS = [
-    "Disponível",
-    "Indisponível",
-    "Pré-venda",
-]
-
 # Rota de pegar dados de todos os jogos
 @app.get("/jogos")
 def get_jogos():
@@ -52,7 +45,7 @@ def get_jogos():
 async def get_jogo_info(id):
     info = db.get(Jogo, id)
     if not info:
-        return JSONResponse({"mensagem": "Jogo não encontrado"}, status_code=404)
+        raise HTTPException(status_code=404, detail="Jogo não encontrado")
     return({"jogo": info.to_dict()})
 
 # Rota de adicionar jogo
@@ -60,16 +53,12 @@ async def get_jogo_info(id):
 def add_jogo(json: JsonJogoAdicionar):
     if json.status == None:
         json.status = "Disponível"
-    if json.status not in STATUS_PERMITIDOS:
-        return JSONResponse({"mensagem": f"Insira um status válido: {STATUS_PERMITIDOS}"}, status_code=400)
-    
     generos = []
     for genero in json.generos:
         generoalt = db.get(Genero, genero)
         generos.append(generoalt)
     if json.preco < 0:
         json.preco = 0
-    
     jogo = Jogo(nome=str(json.nome), status=str(json.status), generos=generos, preco=json.preco, descricao=json.descricao)
     db.add(jogo)
     db.commit()
@@ -83,21 +72,19 @@ def add_jogo(json: JsonJogoAdicionar):
 async def update_jogo(json: JsonJogoAtualizar, id: str):
     jogo = db.get(Jogo, id)
 
-    if json.nome and len(json.nome) >= 3 and json.nome != jogo.nome:
+    if json.nome != jogo.nome and json.nome:
         jogo.nome = json.nome
-    if json.status and json.status != jogo.status:
-        if json.status not in STATUS_PERMITIDOS:
-            return JSONResponse({"mensagem": f"Insira um status válido: {STATUS_PERMITIDOS}"}, status_code=400)
+    if json.status != jogo.status and json.status:
         jogo.status = json.status
     
-    if json.generos and json.generos != jogo.generos:
+    if json.generos != jogo.generos and json.generos:
         generos = []
         for genero_id in json.generos:
             genero = db.get(Genero, genero_id)
             generos.append(genero)
         jogo.generos = generos
     
-    if json.preco and json.preco >= 0 and json.preco != jogo.preco:
+    if json.preco >= 0 and json.preco != jogo.preco:
         jogo.preco = json.preco
     
     if json.descricao and json.descricao != jogo.descricao:
@@ -130,7 +117,7 @@ def get_generos():
 # Rota de adicionar Gênero
 @app.post("/generos")
 def add_genero(json: JsonGeneroAdicionar):
-    genero = Genero(nome=str(json.nome))
+    genero = Genero(nome=str(json.genero))
     db.add(genero)
     db.commit()
     return {
