@@ -31,18 +31,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def read_index():
-    return {"API Operante"}
-
-@app.get("/get/jogo/{id}")
-async def get_jogo_info(id):
-    info = db.get(Jogo, id)
-    if not info:
-        raise HTTPException(status_code=404, detail="Jogo não encontrado")
-    return({"jogo": info.to_dict()})
-
-@app.get("/get/jogos")
+# Rota de pegar dados de todos os jogos
+@app.get("/jogos")
 def get_jogos():
     jogos = []
     for jogo in db.scalars(select(Jogo)):
@@ -50,11 +40,37 @@ def get_jogos():
     
     return {"jogos": jogos}
 
-@app.post("/update/jogo/{id}")
+# Rota de pegar dados de um jogo específico
+@app.get("/jogos/{id}")
+async def get_jogo_info(id):
+    info = db.get(Jogo, id)
+    if not info:
+        raise HTTPException(status_code=404, detail="Jogo não encontrado")
+    return({"jogo": info.to_dict()})
+
+# Rota de adicionar jogo
+@app.post("/jogos")
+def add_jogo(json: JsonJogoAdicionar):
+    if json.status == None:
+        json.status = "Disponível"
+    generos = []
+    for genero in json.generos:
+        generoalt = db.get(Genero, genero)
+        generos.append(generoalt)
+    if json.preco < 0:
+        json.preco = 0
+    jogo = Jogo(nome=str(json.nome), status=str(json.status), generos=generos, preco=json.preco, descricao=json.descricao)
+    db.add(jogo)
+    db.commit()
+    return {
+        "mensagem":"Jogo adicionado com sucesso!",
+        "jogo": jogo.to_dict()
+    }
+
+# Rota de atualizar jogo
+@app.put("/jogos/{id}")
 async def update_jogo(json: JsonJogoAtualizar, id: str):
     jogo = db.get(Jogo, id)
-
-    print(json)
 
     if json.nome != jogo.nome and json.nome:
         jogo.nome = json.nome
@@ -78,29 +94,9 @@ async def update_jogo(json: JsonJogoAtualizar, id: str):
 
     return {"mensagem": "Jogo atualizado com sucesso!"}
   
-#Rota de adicionar jogo
 
-@app.post("/add/jogo")
-def add_jogo(json: JsonJogoAdicionar):
-    if json.status == None:
-        json.status = "Disponível"
-    generos = []
-    for genero in json.generos:
-        generoalt = db.get(Genero, genero)
-        generos.append(generoalt)
-    if json.preco < 0:
-        json.preco = 0
-    jogo = Jogo(nome=str(json.nome), status=str(json.status), generos=generos, preco=json.preco, descricao=json.descricao)
-    db.add(jogo)
-    db.commit()
-    return {
-        "mensagem":"Jogo adicionado com sucesso!",
-        "Jogo": jogo.to_dict()
-    }
-
-#Rota de remover jogo
-
-@app.post("/remove/jogo/{id}")
+# Rota de remover jogo
+@app.delete("/jogos/{id}")
 def remove_jogo(id: int):
     jogo = db.get(Jogo, id)
     db.delete(jogo)
@@ -109,10 +105,17 @@ def remove_jogo(id: int):
         "mensagem":f"Jogo removido nome: {jogo.nome}"
     }
     
+# Rota de pegar todos os gêneros
+@app.get("/generos")
+def get_generos():
+    generos = []
+    for genero in db.scalars(select(Genero)):
+        generos.append(genero.to_dict())
 
-#Rota de adicionar Gênero
+    return {"generos": generos}
 
-@app.post("/add/genero")
+# Rota de adicionar Gênero
+@app.post("/generos")
 def add_genero(json: JsonGeneroAdicionar):
     genero = Genero(nome=str(json.genero))
     db.add(genero)
@@ -121,9 +124,8 @@ def add_genero(json: JsonGeneroAdicionar):
         "mensagem" : "Gênero adicionado"
     }
 
-#Rota de remover Gênero
-
-@app.post("/remove/genero/{id}")
+# Rota de remover Gênero
+@app.delete("/generos/{id}")
 def remove_genero(id: int):
     genero = db.get(Genero, id)
     db.delete(genero)
@@ -131,12 +133,3 @@ def remove_genero(id: int):
     return {
         "mensagem" : f"Gênero removido nome {genero.nome}"
     }
-
-@app.get("/get/generos")
-def get_generos():
-    generos = []
-    for genero in db.scalars(select(Genero)):
-        generos.append(genero.to_dict())
-
-    return {"generos": generos}
-

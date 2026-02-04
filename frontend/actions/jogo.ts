@@ -1,7 +1,7 @@
 "use server";
 
 import axios from "axios";
-import { DELETE_JOGO_URL, GET_JOGO_URL, GET_JOGOS_URL, POST_ADD_JOGO_URL, UPDATE_JOGO_URL } from "@/routes/routes";
+import { DELETE_JOGO_URL, GET_JOGO_URL, GET_JOGOS_URL, POST_ADD_JOGO_URL, PUT_JOGO_URL } from "@/routes/routes";
 import { ResponseDeleteJogo, ResponseJogo, ResponseJogos } from "@/types/jogo";
 
 export async function getJogos() {
@@ -23,7 +23,7 @@ export async function getJogo(id: string | number) {
 }
 export async function deleteJogo(id: string | number) {
   try {
-    const response = await axios.post<ResponseDeleteJogo>(DELETE_JOGO_URL(id));
+    const response = await axios.delete<ResponseDeleteJogo>(DELETE_JOGO_URL(id));
     return response.data;
   } catch (error) {
     console.error(error);
@@ -70,7 +70,7 @@ export async function updateJogo(
       generos: generos,
     };
 
-    const response = await axios.post(UPDATE_JOGO_URL(id), data);
+    const response = await axios.put(PUT_JOGO_URL(id), data);
     return response.data;
   } catch (error) {
     console.error(error);
