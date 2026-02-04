@@ -1,14 +1,14 @@
 from pydantic import BaseModel, field_validator
+from typing import Optional
 
-STATUS_PERMITIDOS = ["Disponível", "Em desenvolvimento", "Descontinuado"]
-TIPOS_PERMITIDOS = ["Indie", "AAA", "Mobile", "Casual"]
+STATUS_PERMITIDOS = ["Disponível", "Indisponível", "Pré-venda"]
 
 class JsonJogoAdicionar(BaseModel):
     nome: str
-    status: str = ""
-    generos: list[int] = []
-    preco: float = 0.0
-    descricao: str = ""
+    status: str
+    generos: list[int]
+    preco: float
+    descricao: str
 
     @field_validator('nome', mode='before')
     @classmethod
@@ -24,10 +24,12 @@ class JsonJogoAdicionar(BaseModel):
             raise ValueError(f'Status inválido. Permitidos: {", ".join(STATUS_PERMITIDOS)}')
         return v
 
-class JsonJogoAtualizar(JsonJogoAdicionar):
-    nome: str = None
-    status: str = None
-    preco: float = -1.0
+class JsonJogoAtualizar(BaseModel):
+    nome: Optional[str]
+    status: Optional[str]
+    generos: Optional[list[int]] 
+    preco: Optional[float]
+    descricao: Optional[str]
 
     @field_validator('nome', mode='before')
     @classmethod
