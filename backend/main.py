@@ -1,9 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from models.models import db, Jogo, Genero
 from fastapi.middleware.cors import CORSMiddleware
 from models.models import db, Jogo, Genero, engine, Base
-from models.json import JsonJogoAtualizar, JsonJogoAdicionar, JsonGeneroAdicionar
+from models.json import JsonJogoAtualizar, JsonJogoAdicionar, JsonGeneroAdicionar, STATUS_PERMITIDOS
 from sqlalchemy import select
+from pydantic import ValidationError
 
 Base.metadata.create_all(engine)
 generos = [
@@ -31,6 +34,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Handler para erros de validação do Pydantic
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    erros = []
+    for erro in exc.errors():
+        erros.append({
+            "campo": ".".join(str(x) for x in erro["loc"][1:]),
+            "mensagem": erro["msg"]
+        })
+    return JSONResponse(
+        status_code=400,
+        content={
+            "sucesso": False,
+            "erro": "Validação falhou",
+            "detalhes": erros
+        }
+    )
+
 @app.get("/")
 def read_index():
     return {"API Operante"}
@@ -52,85 +73,207 @@ def get_jogos():
 
 @app.post("/update/jogo/{id}")
 async def update_jogo(json: JsonJogoAtualizar, id: str):
-    jogo = db.get(Jogo, id)
+    try:
+        jogo = db.get(Jogo, id)
+        
+        if not jogo:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "sucesso": False,
+                    "erro": "Jogo não encontrado"
+                }
+            )
 
-    print(json)
+        if json.nome and json.nome != jogo.nome:
+            jogo.nome = json.nome
+        if json.status and json.status != jogo.status:
+            jogo.status = json.status
+        
+        if json.generos and json.generos != jogo.generos:
+            generos = []
+            for genero_id in json.generos:
+                genero = db.get(Genero, genero_id)
+                if not genero:
+                    raise HTTPException(
+                        status_code=400,
+                        detail={
+                            "sucesso": False,
+                            "erro": "Validação falhou",
+                            "detalhes": [{"campo": "generos", "mensagem": f"Gênero com ID {genero_id} não existe"}]
+                        }
+                    )
+                generos.append(genero)
+            jogo.generos = generos
+        
+        if json.preco >= 0 and json.preco != jogo.preco:
+            jogo.preco = json.preco
+        
+        if json.descricao and json.descricao != jogo.descricao:
+            jogo.descricao = json.descricao
 
-    if json.nome != jogo.nome and json.nome:
-        jogo.nome = json.nome
-    if json.status != jogo.status and json.status:
-        jogo.status = json.status
-    
-    if json.generos != jogo.generos and json.generos:
-        generos = []
-        for genero_id in json.generos:
-            genero = db.get(Genero, genero_id)
-            generos.append(genero)
-        jogo.generos = generos
-    
-    if json.preco >= 0 and json.preco != jogo.preco:
-        jogo.preco = json.preco
-    
-    if json.descricao and json.descricao != jogo.descricao:
-        jogo.descricao = json.descricao
+        db.commit()
 
-    db.commit()
-
-    return {"mensagem": "Jogo atualizado com sucesso!"}
+        return {
+            "sucesso": True,
+            "mensagem": "Jogo atualizado com sucesso!",
+            "jogo": jogo.to_dict()
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "sucesso": False,
+                "erro": str(e)
+            }
+        )
   
 #Rota de adicionar jogo
 
 @app.post("/add/jogo")
 def add_jogo(json: JsonJogoAdicionar):
-    if json.status == None:
-        json.status = "Disponível"
-    generos = []
-    for genero in json.generos:
-        generoalt = db.get(Genero, genero)
-        generos.append(generoalt)
-    if json.preco < 0:
-        json.preco = 0
-    jogo = Jogo(nome=str(json.nome), status=str(json.status), generos=generos, preco=json.preco, descricao=json.descricao)
-    db.add(jogo)
-    db.commit()
-    return {
-        "mensagem":"Jogo adicionado com sucesso!",
-        "Jogo": jogo.to_dict()
-    }
+    try:
+        if json.status == None or json.status == "":
+            json.status = "Disponível"
+        
+        generos = []
+        for genero in json.generos:
+            generoalt = db.get(Genero, genero)
+            if not generoalt:
+                raise HTTPException(
+                    status_code=400,
+                    detail={
+                        "sucesso": False,
+                        "erro": "Validação falhou",
+                        "detalhes": [{"campo": "generos", "mensagem": f"Gênero com ID {genero} não existe"}]
+                    }
+                )
+            generos.append(generoalt)
+        
+        if json.preco < 0:
+            json.preco = 0
+        
+        jogo = Jogo(nome=str(json.nome), status=str(json.status), generos=generos, preco=json.preco, descricao=json.descricao)
+        db.add(jogo)
+        db.commit()
+        return {
+            "sucesso": True,
+            "mensagem":"Jogo adicionado com sucesso!",
+            "jogo": jogo.to_dict()
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "sucesso": False,
+                "erro": str(e)
+            }
+        )
 
 #Rota de remover jogo
 
 @app.post("/remove/jogo/{id}")
 def remove_jogo(id: int):
-    jogo = db.get(Jogo, id)
-    db.delete(jogo)
-    db.commit()
-    return {
-        "mensagem":f"Jogo removido nome: {jogo.nome}"
-    }
+    try:
+        jogo = db.get(Jogo, id)
+        if not jogo:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "sucesso": False,
+                    "erro": "Jogo não encontrado"
+                }
+            )
+        db.delete(jogo)
+        db.commit()
+        return {
+            "sucesso": True,
+            "mensagem": f"Jogo removido com sucesso: {jogo.nome}"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "sucesso": False,
+                "erro": str(e)
+            }
+        )
     
 
 #Rota de adicionar Gênero
 
 @app.post("/add/genero")
 def add_genero(json: JsonGeneroAdicionar):
-    genero = Genero(nome=str(json.genero))
-    db.add(genero)
-    db.commit()
-    return {
-        "mensagem" : "Gênero adicionado"
-    }
+    try:
+        if not json.nome or len(json.nome.strip()) < 3:
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "sucesso": False,
+                    "erro": "Validação falhou",
+                    "detalhes": [{"campo": "nome", "mensagem": "Nome do gênero deve ter no mínimo 3 caracteres"}]
+                }
+            )
+        genero = Genero(nome=str(json.nome))
+        db.add(genero)
+        db.commit()
+        return {
+            "sucesso": True,
+            "mensagem": "Gênero adicionado com sucesso!",
+            "genero": genero.to_dict()
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "sucesso": False,
+                "erro": str(e)
+            }
+        )
 
 #Rota de remover Gênero
 
 @app.post("/remove/genero/{id}")
 def remove_genero(id: int):
-    genero = db.get(Genero, id)
-    db.delete(genero)
-    db.commit()
-    return {
-        "mensagem" : f"Gênero removido nome {genero.nome}"
-    }
+    try:
+        genero = db.get(Genero, id)
+        if not genero:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "sucesso": False,
+                    "erro": "Gênero não encontrado"
+                }
+            )
+        db.delete(genero)
+        db.commit()
+        return {
+            "sucesso": True,
+            "mensagem": f"Gênero removido com sucesso: {genero.nome}"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "sucesso": False,
+                "erro": str(e)
+            }
+        )
 
 @app.get("/get/generos")
 def get_generos():
