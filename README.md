@@ -137,16 +137,6 @@ Base URL (local): `http://localhost:8000`
 
 Erros de validação do FastAPI/Pydantic seguem o formato padronizado definido no handler, com `sucesso: false` e `detalhes` contendo campo+mensagem.
 
-## Exemplos rápidos (curl)
-- Listar jogos:
-
-	curl http://localhost:8000/get/jogos
-
-- Adicionar jogo:
-
-	curl -X POST http://localhost:8000/add/jogo \
-		-H "Content-Type: application/json" \
-		-d '{"nome":"Meu Jogo","generos":[1],"preco":0}'
 
 ## Screenshots (instruções)
 
