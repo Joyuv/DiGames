@@ -1,22 +1,40 @@
 # 🎮 DiGames
 
 Loja de games simples feita em FastAPI + Next.js.
-
-## Logo
 ![](./logo_digames.svg)
 
-
+## Requisitos
+- Python 3
+- Node.js | npm
 
 ## Setup rápido
 
 **Backend:**
+
+<details>
+	<summary>Linux</summary>
+
 ```bash
 cd backend
-python -m venv .venv
-source .venv/bin/activate
+python3 -m venv venv
+source ./venv/bin/activate
 pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
+fastapi dev
 ```
+</details>
+
+<details>
+	<summary>Windows</summary>
+
+```bash
+cd backend
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
+fastapi dev
+```
+</details>
+
 
 **Frontend:**
 ```bash
@@ -41,14 +59,14 @@ Base: `http://localhost:8000`
 
 | Método | Rota | O que faz |
 |--------|------|----------|
-| GET | `/get/jogos` | Lista todos os jogos |
-| GET | `/get/jogo/{id}` | Detalhes de um jogo |
-| GET | `/get/generos` | Lista de gêneros |
-| POST | `/add/jogo` | Cria jogo (body: `nome`, `generos`[], `preco`, `status`, `descricao`) |
-| POST | `/update/jogo/{id}` | Atualiza campos |
-| POST | `/remove/jogo/{id}` | Deleta jogo |
-| POST | `/add/genero` | Adiciona gênero |
-| POST | `/remove/genero/{id}` | Deleta gênero |
+| GET | `/jogos` | Lista todos os jogos |
+| GET | `/jogos/{id}` | Detalhes de um jogo |
+| GET | `/generos` | Lista de gêneros |
+| POST | `/generos` | Adiciona gênero |
+| POST | `/jogos` | Cria jogo |
+| PUT | `/jogos/{id}` | Atualiza campos |
+| DELETE | `/jogos/{id}` | Deleta jogo |
+| DELETE | `/generos/{id}` | Deleta gênero |
 
 
 ## Tech
@@ -56,9 +74,12 @@ Base: `http://localhost:8000`
 - **Backend**: Python + FastAPI + SQLAlchemy (SQLite)
 - **Frontend**: Next.js 16 + React 19 + TailwindCSS
 - **Tema**: next-themes (dark/light)
-- **Extras**: axios, lucide-react, sweetalert2
+- **Extras**: axios, lucide-react, sweetalert2, react-select
 
 
 ## Prints
 
-falta aqui
+![Lista de Jogos](images/lista_jogos.png)
+![Detalhes Jogo](images/detalhes_jogo.png)
+![Publicar Jogo](images/publicar_jogo.png)
+![Atualizar Jogo](images/atualizar_jogo.png)
